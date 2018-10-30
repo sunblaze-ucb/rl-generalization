@@ -29,22 +29,6 @@ python3 -m examples.list_environments
 
 Install Roboschool separately following the instructions [here](https://github.com/openai/roboschool#installation).
 
-### Using Docker
-
-You can use Docker to avoid issues while installing dependencies such as Roboschool. You can clone the following Docker image which has all of the dependencies installed:
-```sh
-docker pull cpacker/rl-environments
-```
-
-To run your experiments using the provided image, use `docker run` (full documentation [here](https://docs.docker.com/engine/reference/commandline/run/)):
-```sh
-# start an interactive bash session to run your experiments in
-docker run -v /path/to/your/copy/of/rl-environments:/rl-environments -it cpacker/rl-environments /bin/bash
-# (inside container)
-cd /rl-environments
-python3 ...
-```
-
 
 ## Using the modified environments
 
@@ -79,11 +63,11 @@ Specific ranges for each environment setting are listed [here](sunblaze_envs#env
 To cite this repository in your research, use:
 
 ```TeX
-@misc{PackerGao:1234.12345,
+@misc{PackerGao:1810.12282,
   Author = {Charles Packer and Katelyn Gao and Jernej Kos and Philipp Kr\"ahenb\"uhl and Vladlen Koltun and Dawn Song},
   Title = {Assessing Generalization in Deep Reinforcement Learning},
   Year = {2018},
-  Eprint = {arXiv:1234.12345},
+  Eprint = {arXiv:1810.12282},
 }
 ```
 
