@@ -10,7 +10,7 @@ if sys.version_info.major != 3:
 package_name = 'sunblaze_envs'
 authors = ['UC Berkeley', 'Intel Labs', 'and other contributors']
 url = 'https://github.com/sunblaze-ucb/rl-generalization'
-description = "Gym environments for reinforcement learning agents"
+description = "Modifiable OpenAI Gym environments for studying generalization in RL"
 
 setup_py_dir = os.path.dirname(os.path.realpath(__file__))
 package_dir = os.path.join(setup_py_dir, package_name)
