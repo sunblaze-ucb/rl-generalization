@@ -1,0 +1,500 @@
+# Definition of models and how to run training and evaluation scripts.
+
+ #############################################################################
+
+models:
+
+  # PPO2 Baselines.
+  - name: PPO2
+    train:
+      command: |
+        python3 -m examples.ppo2_baselines.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --lr {lr}
+          --nsteps {nsteps}
+          --nminibatches {nminibatches}
+          --policy {policy}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.ppo2_baselines.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      episodes: 15000
+      policy: 'mlp'
+      lr: [0.003, 0.0003, 0.00003]  # [3e-3, 3e-4 (default), 3e-5]
+      nsteps: [128, 256, 512]
+      nminibatches: 1
+
+  # PPO2 Baselines.
+  - name: PPO2-LSTM
+    train:
+      command: |
+        python3 -m examples.ppo2_baselines.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --lr {lr}
+          --nsteps {nsteps}
+          --nminibatches {nminibatches}
+          --policy {policy}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.ppo2_baselines.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      episodes: 15000
+      policy: 'lstm'
+      lr: [0.003, 0.0003, 0.00003]  # [3e-3, 3e-4 (default), 3e-5]
+      nsteps: [128, 256, 512]
+      nminibatches: 1
+
+  # A2C Baselines.
+  - name: A2C
+    train:
+      command: |
+        python3 -m examples.a2c_baselines.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --lr {lr}
+          --nsteps {nsteps}
+          --policy {policy}
+          --ent-coef {entcoef}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.a2c_baselines.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      episodes: 15000
+      policy: 'mlp'
+      lr: [0.007, 0.0007, 0.00007]  # [7e-3, 7e-4 (default), 7e-5]
+      nsteps: [5, 10, 15]  # 5 is A2C default
+      entcoef: [0.01, 0.001, 0.0001, 0.00001]  # 1e-2 is A2C default, 1e-4 is A3C default
+
+  # A2C Baselines.
+  - name: A2C-LSTM
+    train:
+      command: |
+        python3 -m examples.a2c_baselines.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --lr {lr}
+          --nsteps {nsteps}
+          --policy {policy}
+          --ent-coef {entcoef}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.a2c_baselines.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      episodes: 15000
+      policy: 'lstm'  # Use 'lstm-spher' for spherical covariance instead of diagonal
+      lr: [0.007, 0.0007, 0.00007]  # [7e-3, 7e-4 (default), 7e-5]
+      nsteps: [5, 10, 15]  # 5 is A2C default
+      entcoef: [0.01, 0.001, 0.0001, 0.00001]  # 1e-2 is A2C default, 1e-4 is A3C default
+
+  # New EPOpt implementation based on PPO2 and A2C Baselines
+  # Can switch out inner-RL algorithm between PPO2 and A2C
+  - name: EPOpt-PPO2
+    train:
+      command: |
+        python3 -m examples.epopt.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --algorithm {algorithm}
+          --policy {policy}
+          --epsilon {epsilon}
+          --activate {activate}
+          --paths {paths}
+          --lr {lr}
+          --nminibatches {nminibatches}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.epopt.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      algorithm: 'ppo2'
+      episodes: 15000
+      # EPOpt hyperparams
+      epsilon: 0.1
+      activate: 100
+      paths: 100
+      # RL algo hyperparams
+      policy: 'mlp' # lstm handled in EPOpt-LSTM
+      lr: [0.03, 0.003, 0.0003]
+      nminibatches: 1
+
+  - name: EPOpt-A2C
+    train:
+      command: |
+        python3 -m examples.epopt.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --algorithm {algorithm}
+          --epsilon {epsilon}
+          --activate {activate}
+          --paths {paths}
+          --lr {lr}
+          --policy {policy}
+          --ent-coef {entcoef}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.epopt.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      algorithm: 'a2c'
+      episodes: 15000
+      # EPOpt hyperparams
+      epsilon: 0.1
+      activate: 100
+      paths: 100
+      # RL algo hyperparams
+      policy: 'mlp' # lstm handled in EPOpt-LSTM
+      lr: [0.07, 0.007, 0.0007]  # Same as A2C but shifted x10
+      entcoef: [0.01, 0.001, 0.0001, 0.00001]  # 1e-2 is A2C default, 1e-4 is A3C default
+
+
+  # EPOpt w/ LSTM (and MLP) support uses code from a different subdir
+  - name: EPOpt-LSTM-PPO2
+    train:
+      command: |
+        python3 -m examples.epopt_lstm.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --algorithm {algorithm}
+          --policy {policy}
+          --epsilon {epsilon}
+          --activate {activate}
+          --paths {paths}
+          --lr {lr}
+          --nminibatches {nminibatches}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.epopt_lstm.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      algorithm: 'ppo2'
+      policy: 'lstm'
+      episodes: 15000
+      # EPOpt hyperparams
+      epsilon: 0.1
+      activate: 100
+      paths: 100
+      # RL algo hyperparams
+      lr: [0.003, 0.0003, 0.00003]
+      nminibatches: 1
+
+
+  - name: EPOpt-LSTM-A2C
+    train:
+      command: |
+        python3 -m examples.epopt_lstm.train
+          --env {environment}
+          --output {output}
+          --total-episodes {episodes}
+          --algorithm {algorithm}
+          --epsilon {epsilon}
+          --activate {activate}
+          --paths {paths}
+          --lr {lr}
+          --policy {policy}
+          --ent-coef {entcoef}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.epopt_lstm.evaluate
+          --env {environment}
+          --outdir {output}
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      algorithm: 'a2c'
+      episodes: 15000
+      # EPOpt hyperparams
+      epsilon: 0.1
+      activate: 100
+      paths: 100
+      # RL algo hyperparams
+      policy: 'lstm'
+      lr: [0.007, 0.0007, 0.00007]  # Same as A2C (same as EPOpt-A2C but shifted /10)
+      entcoef: [0.01, 0.001, 0.0001, 0.00001]  # 1e-2 is A2C default, 1e-4 is A3C default
+
+  - name: Adaptive-PPO2
+    train:
+      command: |
+        python3 -m examples.adaptive.train
+          --env {environment}
+          --output {output}
+          --episodes-per-trial {traineppertrial}
+          --trials {trials}
+          --policy {policy}
+          --algorithm {algorithm}
+          --lr {lr}
+          --nsteps {nsteps}
+          --nminibatches {nminibatches}
+          --akl-coef {aklcoef}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.adaptive.evaluate
+          --env {environment}
+          --outdir {output}
+          --episodes-per-trial 2
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      algorithm: 'ppo2'
+      policy: 'lstm'
+      trials: 7500
+      traineppertrial: 2
+      # RL algo hyperparams
+      lr: [0.0003, 0.00003, 0.000003]
+      nsteps: [128, 256, 512]
+      nminibatches: 1
+      aklcoef: [0.3, 0.2, 0.0]
+
+  - name: Adaptive-A2C
+    train:
+      command: |
+        python3 -m examples.adaptive.train
+          --env {environment}
+          --output {output}
+          --episodes-per-trial {traineppertrial}
+          --trials {trials}
+          --policy {policy}
+          --algorithm {algorithm}
+          --lr {lr}
+          --nsteps {nsteps}
+          --ent-coef {entcoef}
+      output: 'checkpoints/*'
+      parameters: 'env-parameters-*.json'
+    evaluate:
+      command: |
+        python3 -m examples.adaptive.evaluate
+          --env {environment}
+          --outdir {output}
+          --episodes-per-trial 2
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+          {model}
+      output: 'evaluation.json'
+    hyperparameters:
+      algorithm: 'a2c'
+      policy: 'lstm'
+      trials: 7500
+      traineppertrial: 2
+      # RL algo hyperparams
+      lr: [0.007, 0.0007, 0.00007]  # [7e-3, 7e-4 (default), 7e-5]
+      nsteps: [5, 10, 15]
+      entcoef: [0.01, 0.001, 0.0001, 0.00001]  # 1e-2 is A2C default, 1e-4 is A3C default
+
+  # Purely random policies used as baseline
+  - name: Random
+    evaluate:
+      command: |
+        python3 -m examples.random.random
+          --env {environment}
+          --outdir {output}
+          --episodes-per-trial 1
+          --eval-n-trials 1000
+          --eval-n-parallel 1
+      output: 'evaluation.json'
+
+ #############################################################################
+
+# Definition of experiment environments.
+environments:
+
+  ## Classic control and MuJuCo
+
+  # CartPole
+  - train: SunblazeCartPole-v0
+    test:
+      - SunblazeCartPole-v0
+      - SunblazeCartPoleRandomNormal-v0
+      - SunblazeCartPoleRandomExtreme-v0
+
+  # combination of RandomLightPole, RandomShortPole, RandomWeakPush
+  - train: SunblazeCartPoleRandomNormal-v0
+    test:
+      - SunblazeCartPole-v0
+      - SunblazeCartPoleRandomNormal-v0
+      # combination of RandomHeavyPole, RandomLongPole, RandomStrongPush
+      - SunblazeCartPoleRandomExtreme-v0
+
+  - train: SunblazeCartPoleRandomExtreme-v0
+    test:
+      - SunblazeCartPole-v0
+      - SunblazeCartPoleRandomNormal-v0
+      - SunblazeCartPoleRandomExtreme-v0
+
+  # MountainCar
+  - train: SunblazeMountainCar-v0
+    test:
+      - SunblazeMountainCar-v0
+      - SunblazeMountainCarRandomNormal-v0
+      - SunblazeMountainCarRandomExtreme-v0
+
+  # combination of RandomLowStart, RandomWeakForce, RandomLightCar
+  - train: SunblazeMountainCarRandomNormal-v0
+    test:
+      - SunblazeMountainCar-v0
+      - SunblazeMountainCarRandomNormal-v0
+      # combination of RandomHighStart, RandomStrongForce, RandomHeavyCar
+      - SunblazeMountainCarRandomExtreme-v0
+
+  - train: SunblazeMountainCarRandomExtreme-v0
+    test:
+      - SunblazeMountainCar-v0
+      - SunblazeMountainCarRandomNormal-v0
+      - SunblazeMountainCarRandomExtreme-v0
+
+  # Acrobot
+  - train: SunblazeAcrobot-v0
+    test:
+      - SunblazeAcrobot-v0
+      - SunblazeAcrobotRandomNormal-v0
+      - SunblazeAcrobotRandomExtreme-v0
+
+  # combination of RandomLight, RandomShort, RandomLowInertia
+  - train: SunblazeAcrobotRandomNormal-v0
+    test:
+      - SunblazeAcrobot-v0
+      - SunblazeAcrobotRandomNormal-v0
+      # combination of RandomHeavy, RandomLong, RandomHighInertia
+      - SunblazeAcrobotRandomExtreme-v0
+
+  - train: SunblazeAcrobotRandomExtreme-v0
+    test:
+      - SunblazeAcrobot-v0
+      - SunblazeAcrobotRandomNormal-v0
+      - SunblazeAcrobotRandomExtreme-v0
+
+  # Pendulum
+  - train: SunblazePendulum-v0
+    test:
+       - SunblazePendulum-v0
+       - SunblazePendulumRandomNormal-v0
+       - SunblazePendulumRandomExtreme-v0
+
+  # combination of RandomLight and RandomShort
+  - train: SunblazePendulumRandomNormal-v0
+    test:
+      - SunblazePendulum-v0
+      - SunblazePendulumRandomNormal-v0
+      # combination of RandomHeavy and RandomLong
+      - SunblazePendulumRandomExtreme-v0
+
+  - train: SunblazePendulumRandomExtreme-v0
+    test:
+      - SunblazePendulum-v0
+      - SunblazePendulumRandomNormal-v0
+      - SunblazePendulumRandomExtreme-v0
+
+  # HalfCheetah
+  - train: SunblazeHalfCheetah-v0
+    test:
+      - SunblazeHalfCheetah-v0
+      - SunblazeHalfCheetahRandomNormal-v0
+      - SunblazeHalfCheetahRandomExtreme-v0
+
+  # combination of
+  # RandomStrong, RandomLightTorso, RandomRoughJoints, RandomLowArmature
+  - train: SunblazeHalfCheetahRandomNormal-v0
+    test:
+      - SunblazeHalfCheetah-v0
+      - SunblazeHalfCheetahRandomNormal-v0
+      # combination of
+      # RandomWeak, RandomHeavyTorso, RandomSlipperyJoints, RandomHighArmature
+      - SunblazeHalfCheetahRandomExtreme-v0
+
+  - train: SunblazeHalfCheetahRandomExtreme-v0
+    test:
+      - SunblazeHalfCheetah-v0
+      - SunblazeHalfCheetahRandomNormal-v0
+      - SunblazeHalfCheetahRandomExtreme-v0
+
+  # Hopper
+  - train: SunblazeHopper-v0
+    test:
+      - SunblazeHopper-v0
+      - SunblazeHopperRandomNormal-v0
+      - SunblazeHopperRandomExtreme-v0
+
+  # combination of
+  # RandomStrong, RandomLightTorso, RandomRoughJoints, RandomLowArmature
+  - train: SunblazeHopperRandomNormal-v0
+    test:
+      - SunblazeHopper-v0
+      - SunblazeHopperRandomNormal-v0
+      # combination of
+      # RandomWeak, RandomHeavyTorso, RandomSlipperyJoints, RandomHighArmature
+      - SunblazeHopperRandomExtreme-v0
+
+  - train: SunblazeHopperRandomExtreme-v0
+    test:
+      - SunblazeHopper-v0
+      - SunblazeHopperRandomNormal-v0
+      - SunblazeHopperRandomExtreme-v0
+
