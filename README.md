@@ -73,7 +73,9 @@ Specific ranges for each environment setting are listed [here](sunblaze_envs#env
 
 ## Citations
 
-To cite this repository in your research, use:
+To cite this repository in your research, you can reference the following [paper](https://arxiv.org/abs/1810.12282):
+
+> Charles Packer, Katelyn Gao, Jernej Kos, Philipp Kr&auml;henb&uuml;hl, Vladlen Koltun, and Dawn Song. Assessing Generalization in Deep Reinforcement Learning. *arXiv preprint arXiv:1810.12282* (2018).
 
 ```TeX
 @misc{PackerGao:1810.12282,
