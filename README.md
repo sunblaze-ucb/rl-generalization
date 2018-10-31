@@ -29,6 +29,19 @@ python3 -m examples.list_environments
 
 Install Roboschool separately following the instructions [here](https://github.com/openai/roboschool#installation).
 
+### Using Docker	
+ You can use Docker to avoid issues while installing dependencies such as Roboschool. You can clone the following Docker image which has all of the dependencies installed:	
+```sh
+# download docker image
+docker pull cpacker/rl-generalization
+
+# start an interactive bash session
+docker run -v /path/to/your/copy/of/rl-generalization:/rl-generalization -it cpacker/rl-generalization /bin/bash
+
+# (inside container)
+cd /rl-generalization	
+python3 -m examples.list_environments
+```
 
 ## Using the modified environments
 
