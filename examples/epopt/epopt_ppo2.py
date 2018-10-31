@@ -273,7 +273,7 @@ def learn(*, policy, env, nsteps, total_episodes, ent_coef, lr,
         epsilonnow = epsilon(update)
         obs, returns, masks, actions, values, neglogpacs, states, epinfos, num_episodes = runner.run(paths=paths, epsilon=epsilonnow) #pylint: disable=E0632
 
-        assert(num_episodes==np.sum(masks), num_episodes, np.sum(masks))
+        assert num_episodes==np.sum(masks), (num_episodes, np.sum(masks))
         episodes_so_far += num_episodes
 
         epinfobuf.extend(epinfos)

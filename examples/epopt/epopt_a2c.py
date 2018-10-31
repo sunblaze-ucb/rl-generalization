@@ -248,7 +248,7 @@ def learn(policy, env,
 
         epsilonnow = epopt_epsilon(update)
         obs, states, rewards, masks, actions, values, num_episodes = runner.run(paths=paths, epsilon=epsilonnow)
-        assert(num_episodes==np.sum(masks), num_episodes, np.sum(masks))
+        assert num_episodes==np.sum(masks), (num_episodes, np.sum(masks))
         episodes_so_far += num_episodes
 
         policy_loss, value_loss, policy_entropy = model.train(obs, states, rewards, masks, actions, values)

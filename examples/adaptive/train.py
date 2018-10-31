@@ -95,57 +95,14 @@ def train(
             epsilon=1e-5,
             alpha=0.99,
             gamma=0.99,
+            log_interval=1,
             save_interval=100,
         )
     elif alg == 'ppo2':
-        # Rocky's code:
-        # batch_size: 50000
-        #   Passed to PPOSGD, but not actually used (???)
-        #   Also passed to sampler: https://github.com/cpacker/rocky-rl2/blob/be2d06d5bea1fbc2f102b467e757766018cac76f/rocky/rl2_maml/launchers/rl2_maml_7.py#L218
-        # clip_lr: 0.2
-        #   Same as Baselines default
-        # use_kl_penalty: False
-        #   Default False
-        #   Doesn't look like Baselines does this either: https://github.com/openai/baselines/blob/24fe3d6576dd8f4cdd5f017805be689d6fa6be8c/baselines/ppo2/ppo2.py#L42
-        # nonlinearity: relu
-        #   [DIFFERENT] We use tanh
-        # mean_kl: 0.01
-        #   Passed as arg step_size to PPOSGD (???)
-        # layer_normalization: False
-        #   Default false: https://github.com/cpacker/rocky-rl2/blob/be2d06d5bea1fbc2f102b467e757766018cac76f/rocky/neural_learner/policies/gaussian_rnn_actor_critic.py#L28
-        #   Passed to RNN constructor
-        # n_episodes: 2
-        #   Looks like this is episodes-per-trial, https://github.com/cpacker/rocky-rl2/blob/be2d06d5bea1fbc2f102b467e757766018cac76f/rocky/neural_learner/envs/multi_env.py#L74
-        # episode_horizon: 200
-        #   used for: max_path_length = n_episodes * episode_horizon
-        # weight_normalization: True
-        #   Default False
-        #   Passed to RNN constructor
-        # min_epochs: 5
-        #   used here: https://github.com/cpacker/rocky-rl2/blob/be2d06d5bea1fbc2f102b467e757766018cac76f/rocky/neural_learner/algos/pposgd_joint_ac.py#L299
-        # opt_batch_size: 32
-        #   Goes into TBTTTOptimizer, default is 32
-        #   Relevant code: https://github.com/cpacker/rocky-rl2/blob/be2d06d5bea1fbc2f102b467e757766018cac76f/rocky/neural_learner/optimizers/tbptt_optimizer.py#L178
-        # opt_n_steps: None
-        #   Goes into TBPTTOptimizer, default is 20
-        #   When n_steps=None, does entire chunk: https://github.com/cpacker/rocky-rl2/blob/be2d06d5bea1fbc2f102b467e757766018cac76f/rocky/neural_learner/optimizers/tbptt_optimizer.py#L153
-        # batch_normalization: False
-        #   Not used (???)
-        # entropy_bonus_coeff: 0
-        #   Same as Baselines default
-        # discount: 0.99
-        #   Same as Baselines default (gamma=0.99)
-        # gae_lambda: 0.97
-        #   [DIFFERENT] We use 0.95
-        # hidden_dim: 256
-        #   Same as lstm/gru in base.py
-
         ppo2_episodes.learn(
             policy=policy_fn,
             env=env,
-            # nminibatches needs to be 1 for adaptive,
-            # so factor it into nsteps
-            #nsteps=2048//32,
+            # nminibatches needs to be 1 for adaptive, factor it into nsteps
             nsteps=nsteps//nminibatches,
             nminibatches=1,
             #nsteps=512,  # originally
