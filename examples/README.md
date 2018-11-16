@@ -7,6 +7,7 @@ Please refer to the README in the examples folder for descriptions of the enviro
 We consider two architectures for the policy and value function:
 * **mlp**: Policy and value function are MLPs with two hidden layers and no parameter sharing.
 * **lstm**: Policy and value function are separate fully connected layers on top of a LSTM whose inputs are learned features computed using a MLP.
+
 Please refer to the paper for details.
 
 ## PPO
