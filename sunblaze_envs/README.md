@@ -1,8 +1,23 @@
+## Overview
+
+There are six environments, built on top of the corresponding OpenAI Gym and Roboschool implementations:
+* CartPole
+* MountainCar
+* Acrobot
+* Pendulum
+* HalfCheetah
+* Hopper
+
+Each has three versions:
+* **D**: Environment parameters are set to the default values in Gym and Roboschool. Access by Sunblaze*Environment*-v0, e.g. SunblazeCartPole-v0.
+* **R**: Environment parameters are randomly sampled from intervals containing their default values. Access by Sunblaze*Environment*RandomNormal-v0.
+* **E**: Environment parameters are randomly sampled from intervals outside those in **R**, containing more extreme values. Access by Sunblaze*Environment*RandomExtreme-v0.
+
 ## Environment details
 
 Ranges of parameters for each version of each environment, using set notation.
 
-| Environment  |  Parameter  |  D  |  R (`RandomNormal`)  |  E (`RandomExtreme`)  | 
+| Environment  |  Parameter  |  D  |  R  |  E  | 
 | --- | --- | --- | --- | --- | 
 | CartPole  |  Force  |  10  |  [5,15] |  [1,5] U [15,20]    | 
 | |  Length  |  0.5  |  [0.25,0.75]  |  [0.05,0.25] U [0.75,1.0]  | 
