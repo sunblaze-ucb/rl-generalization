@@ -1,6 +1,6 @@
 # Examples
 
-Please refer to the README in the examples folder for descriptions of the environments.
+Please refer to the README in the `sunblaze_envs` folder for descriptions of the environments.
 
 ## Policy and value function architectures
 
