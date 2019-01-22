@@ -115,7 +115,7 @@ class EPOptRunner(BaseRunner):
         """Instead of doing a trajectory of nsteps (ie, "horizon"), do a
         sample N "paths" and then return the bottom epsilon-percentile
         """
-        # FIXME(cpacker): currently only works with single-threading
+        # Currently only works with single-threading
         assert(self.env.num_envs==1)
 
         # Store all N trajectories sampled then return data of bottom-epsilon
